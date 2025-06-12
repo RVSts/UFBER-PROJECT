@@ -7,7 +7,7 @@ import java.util.List;
 public class Ufber {
     private List<Cliente> clientes   = new ArrayList<>();
     private List<Motorista> motoristas = new ArrayList<>();
-    private List<Servico>   servicos   = new ArrayList<>();
+    private List<Corrida>   corridas   = new ArrayList<>();
     private List<Trajeto> trajetos = new ArrayList<>();
 
     //MÉTODOS DE GERENCIAMENTO
@@ -19,12 +19,28 @@ public class Ufber {
         motoristas.add(motorista);
     }
 
-    public void cadastrarServico(Servico servico) {
-        servicos.add(servico);
+    public void cadastrarCorrida(Corrida corrida) {
+        corridas.add(corrida);
     }
 
     public void cadastrarTrajeto(Trajeto trajeto) {
         trajetos.add(trajeto);
+    }
+
+    // Metodo para selecionar trajeto para uma corrida
+    public void selecionarTrajeto(Corrida corrida, int indiceTrajeto) {
+        corrida.verificarTrajetos(trajetos, indiceTrajeto);
+    }
+
+    // Metodo para listar motoristas compatíveis
+    public List<Motorista> listarMotoristasCompativeis(Corrida corrida) {
+        return corrida.verificarMotoristas(motoristas);
+    }
+
+    // Metodo para atribuir motorista a corrida
+    public void atribuirMotorista(Corrida corrida, Motorista motorista) {
+        corrida.setMotorista(motorista);
+        corrida.calcularValorCorrida(); // Calcula o valor após atribuição
     }
 
     //MÉTODOS DE ACESSO // esses getters permitem ao Main fazer sys.getClientes() e sys.getMotoristas()
@@ -36,8 +52,8 @@ public class Ufber {
         return new ArrayList<>(motoristas);
     }
 
-    public List<Servico> getServicos() {
-        return new ArrayList<>(servicos);
+    public List<Corrida> getCorridas() {
+        return new ArrayList<>(corridas);
     }
 
     public List<Trajeto> getTrajetos() {
@@ -56,11 +72,12 @@ public class Ufber {
     public void removerTrajeto(Trajeto trajeto) {
         trajetos.remove(trajeto);
     }
+
     // --------- SOLICITAR CORRIDA ---------
-    public Servico solicitarServico(Cliente cliente,
+    public Corrida solicitarCorrida(Cliente cliente,
                                     Motorista motorista,
                                     Trajeto trajeto,
-                                    LocalDateTime dataHora,
+                                    LocalDateTime horario,
                                     double valorEstimado,
                                     int numeroPassageiros,
                                     boolean compartilhada)
@@ -68,39 +85,41 @@ public class Ufber {
         if (motorista.getContrato() == TipoContrato.PRO_LABORE ||
                 (motorista.getContrato() == TipoContrato.CARONA && compartilhada))
         {
-            Corrida corrida = new Corrida(
-                    dataHora,
+            Prolabore prolabore = new Prolabore(
+                    horario,
                     trajeto,
                     motorista,
                     cliente,
                     numeroPassageiros,
                     compartilhada
             );
-            corrida.calcularCorrida();
-            servicos.add(corrida);
-            return corrida;
+            prolabore.calcularValorCorrida();
+            corridas.add(prolabore);
+            return prolabore;
         }
         System.out.println("Motorista não habilitado para esta corrida.");
         return null;
     }
 
     // --------- SOLICITAR ENTREGA ---------
-    public Servico solicitarServico(Cliente cliente,
+    public Corrida solicitarCorrida(Cliente cliente,
+                                    Cliente cliente2,
                                     Motorista motorista,
                                     Trajeto trajeto,
-                                    LocalDateTime dataHora,
+                                    LocalDateTime horario,
                                     Item item)
     {
         if (motorista.getContrato() == TipoContrato.PRO_LABORE) {
             Entrega entrega = new Entrega(
-                    dataHora,
+                    horario,
                     trajeto,
                     motorista,
                     cliente,
+                    cliente2,
                     item
             );
-            entrega.calcularCorrida();
-            servicos.add(entrega);
+            entrega.calcularValorCorrida();
+            corridas.add(entrega);
             return entrega;
         }
         System.out.println("Motorista não habilitado para entregas.");
@@ -110,8 +129,8 @@ public class Ufber {
     //Metodo para exibiri o historico das corridas
     public void exibirHistorico() {
         System.out.println("\nHISTÓRICO DE CORRIDAS");
-        for (Servico servico : servicos) {
-            servico.exibirDetalhes();
+        for (Corrida corrida : corridas) {
+            corrida.exibirDetalhes();
         }
     }
 }

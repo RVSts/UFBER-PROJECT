@@ -13,6 +13,8 @@ public class Main {
         // Criar clientes
         Cliente cliente1 = new Cliente("João Silva", "71999998888", "11122233344", TipoEndereco.CASA);
         Cliente cliente2 = new Cliente("Maria Souza", "71999997777", "55566677788", TipoEndereco.CAMPUS_FEDERACAO);
+        Cliente cliente12 = new Cliente("John Kelvin", "71999966666", "11122244455", TipoEndereco.CASA);
+        Cliente cliente22 = new Cliente("Bertrand Santos", "71999899911", "11122233322", TipoEndereco.CAMPUS_CANELA);
         ufber.cadastrarCliente(cliente1);
         ufber.cadastrarCliente(cliente2);
 
@@ -40,19 +42,19 @@ public class Main {
         Item item1 = new Item("Documentos importantes", true);
 
         // Criar serviços (com horários específicos)
-        LocalDateTime dataHora1 = LocalDateTime.of(2025, 5, 31, 14, 30);
-        LocalDateTime dataHora2 = LocalDateTime.of(2025, 5, 31, 18, 15);
+        LocalDateTime horario1 = LocalDateTime.of(2025, 5, 31, 14, 30);
+        LocalDateTime horario2 = LocalDateTime.of(2025, 5, 31, 18, 15);
 
-        Corrida corrida1 = new Corrida(dataHora1, trajeto1, motorista1, cliente1, 1, false);
-        Entrega entrega1 = new Entrega(dataHora2, trajeto2, motorista2, cliente2, item1);
+        Prolabore corrida1 = new Prolabore(horario1, trajeto1, motorista1, cliente1,1, false);
+        Entrega entrega1 = new Entrega(horario2, trajeto2, motorista2, cliente2, cliente22, item1);
 
         // Calcular valores
-        corrida1.calcularCorrida();
-        entrega1.calcularCorrida();
+        corrida1.calcularValorCorrida();
+        entrega1.calcularValorCorrida();
 
         // Finalizar serviços
-        corrida1.finalizarServico("Cartão de crédito");
-        entrega1.finalizarServico("PIX");
+        corrida1.finalizarCorrida("Cartão de crédito");
+        entrega1.finalizarCorrida("PIX");
 
         // Visualizar históricos
         cliente1.visualizarHistorico();

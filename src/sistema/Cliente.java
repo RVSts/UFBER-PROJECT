@@ -6,7 +6,7 @@ import java.util.List;
 public class Cliente extends Usuario {
     private String status;
     private TipoEndereco enderecoCasa;
-    private List<Servico> historicoServicos = new ArrayList<>();
+    private List<Corrida> historicoCorridas = new ArrayList<>();
 
     public Cliente(String nomeCompleto, String telefone,
                    String cpf,
@@ -17,15 +17,15 @@ public class Cliente extends Usuario {
         this.status = "ativo";
     }
 
-    public void adicionarServico(Servico servico) {
-        historicoServicos.add(servico);
+    public void adicionarServico(Corrida corrida) {
+        historicoCorridas.add(corrida);
     }
 
     public void visualizarHistorico() {
         System.out.println("\nHistórico de Serviços do Cliente: " + getNomeCompleto());
         System.out.println("Status: " + status);
-        for (Servico servico : historicoServicos) {
-            servico.exibirDetalhes();
+        for (Corrida corrida : historicoCorridas) {
+            corrida.exibirDetalhes();
         }
     }
 

@@ -11,7 +11,8 @@ public class Motorista extends Usuario {
     private String status;
 
     private TipoContrato contrato;
-    private ArrayList<Veiculo> veiculos;
+    private List<Veiculo> veiculos;
+    private List<Trajeto> historicoTrajetos = new ArrayList<>();
 
     public Motorista(String nome, String telefone,
                      String cpf, TipoContrato contrato)
@@ -25,11 +26,22 @@ public class Motorista extends Usuario {
 
     public void adicionarVeiculo(Veiculo veiculo) { veiculos.add(veiculo); }
 
+    public void adicionarCorrida(Trajeto trajeto) { historicoTrajetos.add(trajeto); }
+
+    public ArrayList<Trajeto> visualizarHistoricoTrajetos() {
+        System.out.println("\nHistorico de trajetos de: " + getNomeCompleto());
+        System.out.println("Status: " + getStatus());
+        for (Trajeto t : historicoTrajetos) {
+            t.exibirDetalhes();
+        }
+        return null;
+    }
+
 
     // GETTERS
     public double getAvaliacaoMedia()       { return avaliacaoMedia; }
     public String getStatus()              { return status;}
-    public ArrayList<Veiculo> getVeiculos() { return veiculos; }
+    public List<Veiculo> getVeiculos() { return veiculos; }
     public TipoContrato getContrato()       { return contrato; }
 
     // SETTERS

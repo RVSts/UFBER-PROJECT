@@ -14,6 +14,13 @@ public class Trajeto {
         this.distanciaKm = distanciaKm;
     }
 
+    public void exibirDetalhes()
+    {
+        System.out.println("\nOrigem da corrida: " + getOrigem());
+        System.out.println("Destino da corrida: " + getDestino());
+        System.out.println("Distância da corrida: " + getDistanciaKm());
+    }
+
     //GETTERS
     public TipoEndereco getOrigem()  { return this.origem; }
     public TipoEndereco getDestino() { return this.destino; }
