@@ -9,8 +9,7 @@ public class Cliente extends Usuario {
     private List<Corrida> historicoCorridas = new ArrayList<>();
 
     public Cliente(String nomeCompleto, String telefone,
-                   String cpf,
-                   TipoEndereco enderecoCasa)
+                   String cpf, TipoEndereco enderecoCasa)
     {
         super(nomeCompleto, telefone, cpf);
         this.enderecoCasa = enderecoCasa;

@@ -11,7 +11,7 @@ public class Motorista extends Usuario {
     private String status;
 
     private TipoContrato contrato;
-    private List<Veiculo> veiculos;
+    private List<Veiculo> veiculos = new ArrayList<>();
     private List<Trajeto> historicoTrajetos = new ArrayList<>();
 
     public Motorista(String nome, String telefone,
