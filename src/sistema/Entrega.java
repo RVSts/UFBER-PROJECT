@@ -19,14 +19,21 @@ public class Entrega extends Corrida {
         this.destinatario = destinatario;
         this.item = item;
         this.pego = false;
+
+        if (trajeto != null && motorista != null) {
+            calcularEAtualizarValor();
+        }
     }
 
     @Override
-    public double calcularValorCorrida() {
+    public double calcularValorCorrida(Trajeto trajeto, Corrida corrida) {
+        if (motorista == null || motorista.getVeiculos().isEmpty()) {
+            return 0.0; // Retorna 0 se motorista ou veículo não estiverem disponíveis
+        }
+
         Veiculo veiculo = motorista.getVeiculos().get(0);
         double fator = (veiculo.getTipo() == TipoVeiculo.MOTO) ? 0.5 : 0.8;
-        valorEstimado = trajeto.getDistanciaKm() * fator;
-        return valorEstimado;
+        return trajeto.getDistanciaKm() * fator;
     }
 
     //GETTERS

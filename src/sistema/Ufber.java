@@ -29,7 +29,20 @@ public class Ufber {
 
     // Metodo para selecionar trajeto para uma corrida
     public void selecionarTrajeto(Corrida corrida, int indiceTrajeto) {
-        corrida.verificarTrajetos(trajetos, indiceTrajeto);
+        if (indiceTrajeto >= 0 && indiceTrajeto < trajetos.size()) {
+            Trajeto trajetoSelecionado = trajetos.get(indiceTrajeto);
+            corrida.setTrajeto(trajetoSelecionado);
+
+            // Atualiza o valor da corrida se possível
+            if (corrida instanceof Carona || corrida.getMotorista() != null) {
+                try {
+                    corrida.calcularEAtualizarValor();
+                    System.out.println("Valor da corrida atualizado: R$" + corrida.getValorFinalCorrida());
+                } catch (IllegalStateException e) {
+                    System.out.println("Não foi possível calcular o valor: " + e.getMessage());
+                }
+            }
+        }
     }
 
     // Metodo para listar motoristas compatíveis
@@ -40,7 +53,14 @@ public class Ufber {
     // Metodo para atribuir motorista a corrida
     public void atribuirMotorista(Corrida corrida, Motorista motorista) {
         corrida.setMotorista(motorista);
-        corrida.calcularValorCorrida(); // Calcula o valor após atribuição
+        if (corrida.getTrajeto() != null) {
+            try {
+                corrida.calcularEAtualizarValor();
+                System.out.println("Valor da corrida atualizado: R$" + corrida.getValorFinalCorrida());
+            } catch (IllegalStateException e) {
+                System.out.println("Não foi possível calcular o valor: " + e.getMessage());
+            }
+        }
     }
 
     //MÉTODOS DE ACESSO // esses getters permitem ao Main fazer sys.getClientes() e sys.getMotoristas()
@@ -73,18 +93,15 @@ public class Ufber {
         trajetos.remove(trajeto);
     }
 
-    // --------- SOLICITAR CORRIDA ---------
-    public Corrida solicitarCorrida(Cliente cliente,
-                                    Motorista motorista,
-                                    Trajeto trajeto,
-                                    LocalDateTime horario,
-                                    double valorEstimado,
-                                    int numeroPassageiros,
-                                    boolean compartilhada)
-    {
-        if (motorista.getContrato() == TipoContrato.PRO_LABORE ||
-                (motorista.getContrato() == TipoContrato.CARONA && compartilhada))
-        {
+    // --------- SOLICITAR Corrida ---------
+    // --------- SOLICITAR CORRIDA PROLABORE ---------
+    public Prolabore solicitarProlabore(Cliente cliente,
+                                        Motorista motorista,
+                                        Trajeto trajeto,
+                                        LocalDateTime horario,
+                                        int numeroPassageiros,
+                                        boolean compartilhada) {
+        if (motorista.getContrato() == TipoContrato.PRO_LABORE) {
             Prolabore prolabore = new Prolabore(
                     horario,
                     trajeto,
@@ -93,11 +110,10 @@ public class Ufber {
                     numeroPassageiros,
                     compartilhada
             );
-            prolabore.calcularValorCorrida();
             corridas.add(prolabore);
             return prolabore;
         }
-        System.out.println("Motorista não habilitado para esta corrida.");
+        System.out.println("Motorista não habilitado para corridas pró-labore.");
         return null;
     }
 
@@ -118,12 +134,42 @@ public class Ufber {
                     cliente2,
                     item
             );
-            entrega.calcularValorCorrida();
             corridas.add(entrega);
             return entrega;
         }
         System.out.println("Motorista não habilitado para entregas.");
         return null;
+    }
+
+    // --------- SOLICITAR CARONA ---------
+    public Carona solicitarCarona(Cliente cliente,
+                                  Motorista motorista,
+                                  Trajeto trajeto,
+                                  LocalDateTime horario,
+                                  int numeroPassageiros,
+                                  boolean compartilhada,
+                                  double valorOferecidoPorKm) {
+        if (motorista.getContrato() == TipoContrato.CARONA) {
+            Carona carona = new Carona(
+                    horario,
+                    trajeto,
+                    motorista,
+                    cliente,
+                    numeroPassageiros,
+                    compartilhada,
+                    valorOferecidoPorKm
+            );
+            corridas.add(carona);
+            return carona;
+        }
+        System.out.println("Motorista não habilitado para caronas.");
+        return null;
+    }
+
+    // --------- ATUALIZAR CONTRIBUIÇÃO DA CARONA ---------
+    public void atualizarContribuicaoCarona(Carona carona, double novoValorPorKm) {
+        carona.atualizarContribuicao(novoValorPorKm);
+        System.out.println("Valor atualizado: R$" + carona.getValorFinalCorrida());
     }
 
     //Metodo para exibiri o historico das corridas

@@ -14,6 +14,11 @@ public class Prolabore extends Corrida {
         super(horario, trajeto, motorista, cliente);
         this.numeroPassageiros = numeroPassageiros;
         this.compartilhada = compartilhada;
+        this.valorFinalCorrida = 0.0;
+
+        if (trajeto != null && motorista != null) {
+            calcularEAtualizarValor();
+        }
     }
 
     @Override
@@ -24,11 +29,14 @@ public class Prolabore extends Corrida {
     }
 
     @Override
-    public double calcularValorCorrida() {
+    public double calcularValorCorrida(Trajeto trajeto, Corrida corrida) {
+        if (motorista == null || motorista.getVeiculos().isEmpty()) {
+            return 0.0; // Retorna 0 se motorista ou veículo não estiverem disponíveis
+        }
+
         Veiculo veiculo = motorista.getVeiculos().get(0);
         double fator = (veiculo.getTipo() == TipoVeiculo.MOTO) ? 1.0 : 1.3;
-        valorEstimado = trajeto.getDistanciaKm() * fator;
-        return valorEstimado;
+        return trajeto.getDistanciaKm() * fator;
     }
 
     //GETTERS

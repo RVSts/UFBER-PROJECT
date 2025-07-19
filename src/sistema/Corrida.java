@@ -1,4 +1,4 @@
-package sistema;// --- Servico.java ---
+package sistema;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +13,7 @@ public abstract class Corrida {
     protected Trajeto trajeto;
     protected LocalDateTime horario;
     protected StatusServico status;
-    protected double valorEstimado;
+    protected double valorFinalCorrida;
     protected Pagamento pagamento;
     protected int id;
 
@@ -26,6 +26,7 @@ public abstract class Corrida {
         this.cliente = cliente;
         this.status = StatusServico.PENDENTE;
         this.id = proximoId++;
+        this.valorFinalCorrida = 0.0;
     }
 
     //MÉTODOS
@@ -40,11 +41,18 @@ public abstract class Corrida {
         return new ArrayList<>(motoristasCadastrados);
     }
 
-    public double calcularValorCorrida() { return trajeto.getDistanciaKm();};
+    public abstract double calcularValorCorrida(Trajeto trajeto, Corrida corrida);
 
     public void finalizarCorrida(String metodoPagAMENTO) {
         this.status = StatusServico.CONCLUIDO;
-        this.pagamento = new Pagamento(valorEstimado, metodoPagAMENTO, "Pago");
+        this.pagamento = new Pagamento(valorFinalCorrida, metodoPagAMENTO, "Pago");
+    }
+
+    public void calcularEAtualizarValor() {
+        if (trajeto == null) {
+            throw new IllegalStateException("Trajeto não definido para a corrida");
+        }
+        this.valorFinalCorrida = calcularValorCorrida(trajeto, this);
     }
 
     public ArrayList<Trajeto> veririfcarHistoricoTrajetosMotorista(Motorista motorista) {
@@ -69,7 +77,7 @@ public abstract class Corrida {
     public Trajeto getTrajeto()           { return trajeto;          }
     public LocalDateTime getHorario()     { return horario;         }
     public StatusServico getStatus()      { return status;           }
-    public double getValorEstimado()      { return valorEstimado;    }
+    public double getValorFinalCorrida()      { return valorFinalCorrida;    }
     public Pagamento getPagamento()       { return pagamento; }
     public int getId()                    { return id; }
 
@@ -79,6 +87,6 @@ public abstract class Corrida {
     public void setTrajeto(Trajeto trajeto)               { this.trajeto = trajeto;               }
     public void setHorario(LocalDateTime horario)         { this.horario = horario;             }
     public void setStatus(StatusServico status)           { this.status = status;                 }
-    public void setValorEstimado(double valorEstimado)    { this.valorEstimado = valorEstimado;   }
+    public void setValorFinalCorrida(double valorEstimado)    { this.valorFinalCorrida = valorEstimado;   }
     public void setId(int id)                             { this.id = id; }
 }

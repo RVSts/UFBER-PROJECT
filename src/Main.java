@@ -3,38 +3,38 @@ import gerenciamento.CadastroCliente;
 import gerenciamento.IAdministrador;
 import sistema.*;
 
+import java.time.LocalDateTime;
+
 public class Main {
     public static void main(String[] args) {
         Ufber sistema = new Ufber();
-        IAdministrador admin = new Administrador("Admin Chefe", "ADM001", "12345678901");
-        IAdministrador autoCadastro = new CadastroCliente();
 
-        // Cadastro pelo administrador
-        Motorista motorista = admin.cadastrarMotorista(
-                sistema,
-                "Carlos Motorista",
-                "71999998888",
-                "11122233344",
-                TipoContrato.PRO_LABORE
+        Cliente cliente = new Cliente("João Silva", "71999998888", "11122233344", TipoEndereco.CASA);
+        sistema.cadastrarCliente(cliente);
+
+        Corrida corrida = new Prolabore(
+                LocalDateTime.now(),
+                null, // trajeto não definido
+                null,
+                cliente,
+                2,
+                false
         );
+        sistema.cadastrarCorrida(corrida);
 
-        // Auto-cadastro de cliente
-        Cliente cliente = autoCadastro.cadastrarCliente(
-                sistema,
-                "João Cliente",
-                "71999997777",
-                "55566677788",
-                TipoEndereco.CASA
-        );
+        Trajeto trajeto = new Trajeto(TipoEndereco.CAMPUS_ONDINA, TipoEndereco.CASA, 15.5f);
+        sistema.cadastrarTrajeto(trajeto);
 
-        System.out.println("Motorista cadastrado: " + motorista.getNomeCompleto());
-        System.out.println("Cliente cadastrado: " + cliente.getNomeCompleto());
+        Motorista motorista = new Motorista("Carlos Motorista", "71999996666", "99988877766", TipoContrato.PRO_LABORE);
+        Veiculo veiculo = new Veiculo(TipoVeiculo.CARRO, "Fiat Uno", "Vermelho", "ABC1D23");
+        motorista.adicionarVeiculo(veiculo);
+        sistema.cadastrarMotorista(motorista);
 
-        // Verificando cadastros no sistema
-        System.out.println("\nMotoristas no sistema:");
-        sistema.getMotoristas().forEach(m -> System.out.println("- " + m.getNomeCompleto()));
+        corrida.setTrajeto(trajeto);
+        sistema.atribuirMotorista(corrida, motorista);
 
-        System.out.println("\nClientes no sistema:");
-        sistema.getClientes().forEach(c -> System.out.println("- " + c.getNomeCompleto()));
+        corrida.finalizarCorrida("Cartão de crédito");
+
+        corrida.exibirDetalhes();
     }
 }
